@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register – Archaeology Drone</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body data-page="register">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-head">Create your account</div>
+      <div class="small" style="margin-bottom:12px;">Saved only on this browser (localStorage). For demo use only.</div>
+
+      <div class="field"><label>Username</label><input id="regUser" class="input" placeholder="janedoe" autocomplete="username" /></div>
+      <div class="field"><label>Password</label><input id="regPass" type="password" class="input" placeholder="••••••••" autocomplete="new-password" /></div>
+      <div class="field"><label>Full name</label><input id="regName" class="input" placeholder="Jane Doe" /></div>
+      <div class="field"><label>Team / Org</label><input id="regOrg" class="input" value="Field Unit A" /></div>
+
+      <div class="auth-actions">
+        <button id="regGo" class="btn">Register</button>
+        <a class="link" href="login.html">Already have an account? Sign in</a>
+      </div>
+      <div id="regMsg" class="small" style="margin-top:8px;"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

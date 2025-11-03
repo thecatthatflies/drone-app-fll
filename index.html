@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Archaeology Drone – Home</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">AD</div>
+        <div class="user">
+          <div id="userName" style="font-weight:700">—</div>
+          <div id="userOrg" class="small"> </div>
+        </div>
+      </div>
+      <div class="side-card">
+        <div class="flex space"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
+        <button id="connBtn" class="btn mt8" type="button">Connect</button>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="active">🏠 Home</a>
+        <a href="imaging.html">📷 Imaging</a>
+        <a href="activity.html">📝 Activity</a>
+        <a href="about.html">⚙️ About Hardware</a>
+      </nav>
+      <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <section class="section">
+        <div class="head">Live Stats</div>
+        <div class="body">
+          <div id="statsWrap" class="grid stats">
+            <div class="stat"><div>Core Temp</div><div id="stTemp" class="k">—°C</div></div>
+            <div class="stat"><div>Battery</div><div id="stBatt" class="k">—%</div><div class="progress mt8"><i id="pbBatt" style="width:0%"></i></div></div>
+            <div class="stat"><div>Altitude</div><div id="stAlt" class="k">— m</div></div>
+            <div class="stat"><div>Link Quality</div><div id="stLink" class="k">—%</div><div class="progress mt8"><i id="pbLink" style="width:0%"></i></div></div>
+            <div class="stat"><div>Solar Input</div><div id="stSolar" class="k">— W</div></div>
+            <div class="stat"><div>Power Draw</div><div id="stPower" class="k">— W</div></div>
+            <div class="stat"><div>Storage</div><div id="stStorage" class="k">—%</div><div class="progress mt8"><i id="pbStorage" style="width:0%"></i></div></div>
+            <div class="stat"><div>GPS</div><div id="stGps" class="k">—</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="head">Flight & Job Controls</div>
+        <div class="body">
+          <div class="flex" style="gap:8px; flex-wrap:wrap;">
+            <button class="btn secondary" onclick="setMode('Idle')">Idle</button>
+            <button class="btn" onclick="setMode('Survey')">Survey</button>
+            <button class="btn" onclick="setMode('Sift')">Sift</button>
+            <button class="btn" onclick="setMode('Dig (Flagged)')">Dig (Flagged)</button>
+            <div class="small" style="margin-left:8px;">Current: <span id="modeNow">Idle</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="head">QoL & Build</div>
+        <div class="body grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+          <div class="side-card"><strong>Dust / Waterproof shell</strong><ul>
+            <li>Carbon fiber (inner)</li><li>Titanium (middle)</li><li>White paint outer coat for thermal distribution</li><li>As light as possible</li></ul></div>
+          <div class="side-card"><strong>QoL / Power</strong><ul>
+            <li>Solar power assist</li><li>Battery + US outlet charging</li><li>Bluetooth 6 & app</li></ul></div>
+          <div class="side-card"><strong>Sensors & Tools</strong><ul>
+            <li>Laser projector, 3D mapping (depth/width/length)</li><li>Site detection</li><li>Sifter (human loaded), Digger (flag-based)</li><li>4K camera feed</li></ul></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Auth modal -->
+  <div id="authModal" class="modal hidden">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0">Sign in (local)</h3>
+      <div class="field"><label>Your name</label><input id="authName" class="input" placeholder="Jane Doe"/></div>
+      <div class="field"><label>Team / Org</label><input id="authOrg" class="input" value="Field Unit A"/></div>
+      <button id="authGo" class="btn" type="button">Continue</button>
+      <div class="small mt8">Stored only in this browser (localStorage).</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

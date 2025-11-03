@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Archaeology Drone – Imaging</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">AD</div>
+        <div class="user"><div id="userName" style="font-weight:700">—</div><div id="userOrg" class="small"> </div></div>
+      </div>
+      <div class="side-card">
+        <div class="flex space"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
+        <button id="connBtn" class="btn mt8" type="button">Connect</button>
+      </div>
+      <nav class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="imaging.html" class="active">📷 Imaging</a>
+        <a href="activity.html">📝 Activity</a>
+        <a href="about.html">⚙️ About Hardware</a>
+      </nav>
+      <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
+    </aside>
+
+    <main class="main">
+      <section class="section">
+        <div class="head">Live camera & map</div>
+        <div class="body">
+          <div class="flex space">
+            <div class="flex" style="gap:8px;">
+              <label class="small">Marker color</label>
+              <input id="markerColor" type="color" value="#10b981" class="input" style="width:64px; padding:4px"/>
+            </div>
+            <button id="clearMarkers" class="btn secondary">Clear markers</button>
+          </div>
+          <div class="canvas-wrap mt8">
+            <canvas id="feedCanvas"></canvas>
+            <div id="camOverlay" class="overlay-off hidden">Connect to place markers</div>
+          </div>
+          <div class="small mt8">Tip: click anywhere on the frame to add a marker; rename/delete below.</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="head">Sites & Controls</div>
+        <div class="body">
+          <table class="table">
+            <thead><tr><th>Label</th><th>Coord</th><th></th></tr></thead>
+            <tbody id="markerRows"></tbody>
+          </table>
+
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:12px;">
+            <button class="btn" onclick="logActivity('Sifter engaged @ '+(new Date()).toLocaleTimeString())">▶ Start Sifting</button>
+            <button class="btn secondary" onclick="logActivity('Sifter paused @ '+(new Date()).toLocaleTimeString())">⏸ Pause Sifting</button>
+            <button class="btn" onclick="logActivity('Digger deployed to flagged areas @ '+(new Date()).toLocaleTimeString())">🛠 Deploy Digger</button>
+            <button class="btn secondary" onclick="logActivity('Digger return-to-home issued @ '+(new Date()).toLocaleTimeString())">↩ Return Digger</button>
+          </div>
+
+          <div class="side-card mt8">
+            <strong>Movement</strong>
+            <div class="grid" style="grid-template-columns: repeat(3, 120px); gap:8px; margin-top:8px;">
+              <button class="btn secondary" onclick="logActivity('Move Up')">⬆ Up</button><div></div>
+              <button class="btn secondary" onclick="logActivity('Move Down')">⬇ Down</button>
+              <button class="btn secondary" onclick="logActivity('Move Left')">⬅ Left</button>
+              <button class="btn" onclick="logActivity('Hover')">⟲ Hover</button>
+              <button class="btn secondary" onclick="logActivity('Move Right')">➡ Right</button>
+            </div>
+            <div class="small mt8">Controls are mocked; actions are recorded in Activity.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Auth modal -->
+  <div id="authModal" class="modal hidden">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0">Sign in (local)</h3>
+      <div class="field"><label>Your name</label><input id="authName" class="input" /></div>
+      <div class="field"><label>Team / Org</label><input id="authOrg" class="input" value="Field Unit A"/></div>
+      <button id="authGo" class="btn" type="button">Continue</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

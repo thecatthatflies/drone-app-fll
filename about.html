@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Archaeology Drone – About Hardware</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">AD</div>
+        <div class="user"><div id="userName" style="font-weight:700">—</div><div id="userOrg" class="small"> </div></div>
+      </div>
+      <div class="side-card">
+        <div class="flex space"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
+        <button id="connBtn" class="btn mt8" type="button">Connect</button>
+      </div>
+      <nav class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="imaging.html">📷 Imaging</a>
+        <a href="activity.html">📝 Activity</a>
+        <a href="about.html" class="active">⚙️ About Hardware</a>
+      </nav>
+      <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
+    </aside>
+
+    <main class="main">
+      <section class="section">
+        <div class="head">Drone Design Summary</div>
+        <div class="body grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="side-card">
+            <strong>Shell</strong>
+            <ul>
+              <li>Dust & waterproof multilayer shell</li>
+              <li><b>Carbon fiber</b> inner layer</li>
+              <li><b>Titanium</b> middle layer</li>
+              <li><b>White paint</b> outer coat for cooling & thermal distribution</li>
+              <li>As light as possible</li>
+            </ul>
+          </div>
+          <div class="side-card">
+            <strong>Hardware</strong>
+            <ul>
+              <li>Laser projector for site gridding</li>
+              <li>3D imaging (depth, width, length) → app</li>
+              <li>Modules: Sift (human loaded), Dig (flag-based), Camera</li>
+              <li>Solar assist, battery, US outlet charging, Bluetooth 6</li>
+            </ul>
+          </div>
+          <div class="side-card">
+            <strong>Software Tabs</strong>
+            <ul>
+              <li><b>Home</b>: stats, power, mode controls</li>
+              <li><b>Imaging</b>: feed, mapping, markers, movement/sifting</li>
+              <li><b>Activity</b>: internal backlog</li>
+            </ul>
+          </div>
+          <div class="side-card">
+            <strong>Notes</strong>
+            <p class="small">All telemetry/actions are simulated for prototyping. Data and account are saved in <code>localStorage</code>.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="authModal" class="modal hidden">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0">Sign in (local)</h3>
+      <div class="field"><label>Your name</label><input id="authName" class="input" /></div>
+      <div class="field"><label>Team / Org</label><input id="authOrg" class="input" value="Field Unit A"/></div>
+      <button id="authGo" class="btn" type="button">Continue</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

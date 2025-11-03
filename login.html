@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in – Archaeology Drone</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body data-page="login">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-head">Sign in</div>
+      <div class="small" style="margin-bottom:12px;">Uses credentials saved via registration on this device.</div>
+
+      <div class="field"><label>Username</label><input id="logUser" class="input" placeholder="janedoe" autocomplete="username"/></div>
+      <div class="field"><label>Password</label><input id="logPass" type="password" class="input" placeholder="••••••••" autocomplete="current-password"/></div>
+
+      <div class="auth-actions">
+        <button id="logGo" class="btn">Sign in</button>
+        <a class="link" href="register.html">Create an account</a>
+      </div>
+      <div id="logMsg" class="small" style="margin-top:8px;"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

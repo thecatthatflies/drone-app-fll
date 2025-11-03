@@ -8,17 +8,12 @@
 </head>
 <body>
   <div class="app">
-    <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">AD</div>
-        <div class="user">
-          <div id="userName" style="font-weight:700">—</div>
-          <div id="userOrg" class="small"> </div>
-        </div>
+      <div class="brand"><div class="logo">AD</div>
+        <div class="user"><div id="userName" style="font-weight:700">—</div><div id="userOrg" class="small"> </div></div>
       </div>
       <div class="side-card">
-        <div class="flex space"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
+        <div class="flex" style="justify-content:space-between"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
         <button id="connBtn" class="btn mt8" type="button">Connect</button>
       </div>
       <nav class="nav">
@@ -30,7 +25,6 @@
       <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
     </aside>
 
-    <!-- Main -->
     <main class="main">
       <section class="section">
         <div class="head">Live Stats</div>
@@ -74,18 +68,6 @@
       </section>
     </main>
   </div>
-
-  <!-- Auth modal -->
-  <div id="authModal" class="modal hidden">
-    <div class="card">
-      <h3 style="margin:0 0 8px 0">Sign in (local)</h3>
-      <div class="field"><label>Your name</label><input id="authName" class="input" placeholder="Jane Doe"/></div>
-      <div class="field"><label>Team / Org</label><input id="authOrg" class="input" value="Field Unit A"/></div>
-      <button id="authGo" class="btn" type="button">Continue</button>
-      <div class="small mt8">Stored only in this browser (localStorage).</div>
-    </div>
-  </div>
-
   <script src="app.js"></script>
 </body>
 </html>

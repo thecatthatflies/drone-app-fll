@@ -13,7 +13,7 @@
         <div class="user"><div id="userName" style="font-weight:700">—</div><div id="userOrg" class="small"> </div></div>
       </div>
       <div class="side-card">
-        <div class="flex space"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
+        <div class="flex" style="justify-content:space-between"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
         <button id="connBtn" class="btn mt8" type="button">Connect</button>
       </div>
       <nav class="nav">
@@ -29,18 +29,20 @@
       <section class="section">
         <div class="head">Live camera & map</div>
         <div class="body">
-          <div class="flex space">
+          <div class="flex" style="justify-content:space-between">
             <div class="flex" style="gap:8px;">
               <label class="small">Marker color</label>
               <input id="markerColor" type="color" value="#10b981" class="input" style="width:64px; padding:4px"/>
             </div>
             <button id="clearMarkers" class="btn secondary">Clear markers</button>
           </div>
-          <div class="canvas-wrap mt8">
+
+          <div class="canvas-wrap" style="margin-top:8px;">
             <canvas id="feedCanvas"></canvas>
             <div id="camOverlay" class="overlay-off hidden">Connect to place markers</div>
           </div>
-          <div class="small mt8">Tip: click anywhere on the frame to add a marker; rename/delete below.</div>
+
+          <div class="small" style="margin-top:8px;">Tip: click anywhere to add a marker; rename/delete below.</div>
         </div>
       </section>
 
@@ -53,13 +55,13 @@
           </table>
 
           <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:12px;">
-            <button class="btn" onclick="logActivity('Sifter engaged @ '+(new Date()).toLocaleTimeString())">▶ Start Sifting</button>
-            <button class="btn secondary" onclick="logActivity('Sifter paused @ '+(new Date()).toLocaleTimeString())">⏸ Pause Sifting</button>
-            <button class="btn" onclick="logActivity('Digger deployed to flagged areas @ '+(new Date()).toLocaleTimeString())">🛠 Deploy Digger</button>
-            <button class="btn secondary" onclick="logActivity('Digger return-to-home issued @ '+(new Date()).toLocaleTimeString())">↩ Return Digger</button>
+            <button class="btn" onclick="logActivity('Sifter engaged')">▶ Start Sifting</button>
+            <button class="btn secondary" onclick="logActivity('Sifter paused')">⏸ Pause Sifting</button>
+            <button class="btn" onclick="logActivity('Digger deployed to flagged areas')">🛠 Deploy Digger</button>
+            <button class="btn secondary" onclick="logActivity('Digger return-to-home issued')">↩ Return Digger</button>
           </div>
 
-          <div class="side-card mt8">
+          <div class="side-card" style="margin-top:8px;">
             <strong>Movement</strong>
             <div class="grid" style="grid-template-columns: repeat(3, 120px); gap:8px; margin-top:8px;">
               <button class="btn secondary" onclick="logActivity('Move Up')">⬆ Up</button><div></div>
@@ -68,23 +70,12 @@
               <button class="btn" onclick="logActivity('Hover')">⟲ Hover</button>
               <button class="btn secondary" onclick="logActivity('Move Right')">➡ Right</button>
             </div>
-            <div class="small mt8">Controls are mocked; actions are recorded in Activity.</div>
+            <div class="small" style="margin-top:8px;">Controls are mocked; actions appear in Activity.</div>
           </div>
         </div>
       </section>
     </main>
   </div>
-
-  <!-- Auth modal -->
-  <div id="authModal" class="modal hidden">
-    <div class="card">
-      <h3 style="margin:0 0 8px 0">Sign in (local)</h3>
-      <div class="field"><label>Your name</label><input id="authName" class="input" /></div>
-      <div class="field"><label>Team / Org</label><input id="authOrg" class="input" value="Field Unit A"/></div>
-      <button id="authGo" class="btn" type="button">Continue</button>
-    </div>
-  </div>
-
   <script src="app.js"></script>
 </body>
 </html>

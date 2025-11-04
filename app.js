@@ -114,23 +114,78 @@ function renderActivity() {
     ul.appendChild(li);
   }
 }
+
+// helper: set a status light by thresholds (low-warn-crit or high-warn-crit)
+function setLight(id, value, bands) {
+  // bands: { mode: "high"|"low", warn:number, crit:number }
+  // mode "high" => high values are bad; "low" => low values are bad
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = "light"; // reset
+
+  let status = "ok";
+  if (bands.mode === "high") {
+    if (value >= bands.crit) status = "crit";
+    else if (value >= bands.warn) status = "warn";
+  } else {
+    if (value <= bands.crit) status = "crit";
+    else if (value <= bands.warn) status = "warn";
+  }
+  el.classList.add(status);
+}
+
 function drawStats() {
   const wrap = document.getElementById("statsWrap"); if (!wrap) return;
-  const s = store.get(KEYS.stats, {});
+
+  const s = store.get(KEYS.stats, {
+    tempC:24, battery:0.86, altitude:1.2, link:0.75, solarW:100,
+    motorsW:0, electronicsW:1500, storage:0.12, gpsFix:true, mode:"Idle"
+  });
+
   const pct = (n)=> Math.round((n||0)*100);
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  // Numeric outputs
   set("stTemp", `${s.tempC?.toFixed?.(1) ?? "—"}°C`);
   set("stBatt", `${pct(s.battery)}%`);
   set("stAlt", `${s.altitude ?? 0} m`);
   set("stLink", `${pct(s.link)}%`);
   set("stSolar", `${s.solarW ?? 0} W`);
-  set("stPower", `${(s.motorsW||0)+(s.electronicsW||0)} W`);
+  const totalW = (s.motorsW||0)+(s.electronicsW||0);
+  set("stPower", `${totalW} W`);
   set("stStorage", `${pct(s.storage)}%`);
   set("stGps", s.gpsFix ? "3D Fix" : "Searching");
+
+  // progress bars
   const pb = (id, n)=>{ const e=document.getElementById(id); if(e) e.style.width = Math.max(0,Math.min(100,n)) + "%"; };
-  pb("pbBatt", pct(s.battery)); pb("pbLink", pct(s.link)); pb("pbStorage", pct(s.storage));
+  pb("pbBatt", pct(s.battery));
+  pb("pbLink", pct(s.link));
+  pb("pbStorage", pct(s.storage));
+
+  // mode
   const modeNow=document.getElementById("modeNow"); if(modeNow) modeNow.textContent = s.mode || "Idle";
+
+  // ---- status lights ----
+  // Temp: high is bad (warn >= 40°C, crit >= 55°C)
+  setLight("lightTemp", s.tempC, { mode:"high", warn:40, crit:55 });
+
+  // Battery: low is bad (warn <= 50%, crit <= 20%)
+  setLight("lightBatt", s.battery*100, { mode:"low", warn:50, crit:20 });
+
+  // Link quality: low is bad (warn <= 70%, crit <= 40%)
+  setLight("lightLink", s.link*100, { mode:"low", warn:70, crit:40 });
+
+  // Power draw: high is bad (warn >= 3000W, crit >= 4500W)
+  setLight("lightPower", totalW, { mode:"high", warn:3000, crit:4500 });
+
+  // Storage: high is bad (warn >= 80%, crit >= 95%)
+  setLight("lightStorage", s.storage*100, { mode:"high", warn:80, crit:95 });
+
+  // GPS: boolean; no fix = crit, fix = ok
+  const gpsEl = document.getElementById("lightGps");
+  if (gpsEl) gpsEl.className = "light " + (s.gpsFix ? "ok" : "crit");
 }
+
 function setMode(mode) {
   const s = store.get(KEYS.stats, {}); s.mode = mode; store.set(KEYS.stats, s);
   const el=document.getElementById("modeNow"); if(el) el.textContent = mode;

@@ -1,4 +1,3 @@
-<script>
 /* ---------- localStorage helpers ---------- */
 const store = {
   get(key, fallback) { try { const v = JSON.parse(localStorage.getItem(key)); return (v ?? fallback); } catch { return fallback; } },
@@ -16,11 +15,17 @@ const KEYS = {
   activity: "arch.activity"
 };
 
-/* ---------- auth utilities ---------- */
+/* ---------- demo vs normal hosting ---------- */
+function isDemoHost() {
+  return location.hostname.endsWith('github.io') ||
+         new URLSearchParams(location.search).get('demo') === '1';
+}
+
+/* ---------- auth ---------- */
 function isAuthed() { return !!store.get(KEYS.account, null); }
 function requireAuth() {
+  if (isDemoHost()) return; // bypass on GH Pages demo
   if (!isAuthed()) {
-    // remember intended url
     sessionStorage.setItem("arch.redirectTo", location.pathname.replace(/^\//,''));
     location.href = "login.html";
   }
@@ -32,7 +37,6 @@ function onSignedInRedirect() {
 }
 function logout() { localStorage.removeItem(KEYS.account); location.href = "login.html"; }
 
-/* Registration: returns {ok,msg} */
 function registerUser({ username, password, name, org }) {
   username = (username||"").trim().toLowerCase();
   if (!username || !password || !name) return { ok:false, msg:"Please fill all required fields." };
@@ -42,8 +46,6 @@ function registerUser({ username, password, name, org }) {
   users.push(user); store.set(KEYS.users, users);
   return { ok:true, user };
 }
-
-/* Login: returns {ok,msg,user} */
 function loginUser({ username, password }) {
   username = (username||"").trim().toLowerCase();
   const users = store.get(KEYS.users, []);
@@ -53,13 +55,13 @@ function loginUser({ username, password }) {
   return { ok:true, user };
 }
 
-/* ---------- sidebar inflate & connection ---------- */
+/* ---------- sidebar & connection ---------- */
 function inflateSidebar() {
   const acct = store.get(KEYS.account, null);
   const userName = document.getElementById("userName");
   const userOrg  = document.getElementById("userOrg");
-  if (userName) userName.textContent = acct ? acct.name : "—";
-  if (userOrg)  userOrg.textContent  = acct ? acct.org  : "";
+  if (userName) userName.textContent = acct ? acct.name : (isDemoHost() ? "Demo User" : "—");
+  if (userOrg)  userOrg.textContent  = acct ? acct.org : (isDemoHost() ? "GH Pages" : "");
   renderConnBadge(!!store.get(KEYS.connected, false));
 }
 
@@ -85,44 +87,29 @@ function runTelemetry(connected) {
   if (!connected) return;
   telemTimer = setInterval(() => {
     const s = store.get(KEYS.stats, {
-      tempC:24, battery:0.86, altitude:1.2, link:0.75, solarW:100,
-      motorsW:0, electronicsW:1500, storage:0.12, gpsFix:true, mode:"Idle"
+      tempC:24, battery:0.86, altitude:1.2, link:0.75, solarW:120,
+      motorsW:300, electronicsW:1600, storage:0.12, gpsFix:true, mode:"Idle"
     });
+    // random drift
     s.tempC = +(s.tempC + (Math.random()*2-1)).toFixed(1);
     s.battery = Math.max(0, Math.min(1, s.battery - 0.0015 + (s.solarW>80?0.001:0)));
     s.altitude = Math.max(0, +(s.altitude + (Math.random()*0.2-0.1)).toFixed(1));
     s.link = Math.max(0, Math.min(1, s.link + (Math.random()*0.06-0.03)));
     s.solarW = Math.max(0, Math.round(80 + Math.random()*120));
-    s.motorsW = Math.round(100 + Math.random()*500);
+    s.motorsW = Math.round(200 + Math.random()*700);
     s.electronicsW = Math.round(1000 + Math.random()*3000);
     s.storage = Math.min(1, s.storage + 0.0008);
     store.set(KEYS.stats, s);
-    drawStats(); // only updates if stats elements exist
+    drawStats(); // updates home if present
   }, 1000);
 }
 
-/* ---------- Activity & Stats renderers ---------- */
+/* ---------- activity & stats ---------- */
 function logActivity(msg) { store.push(KEYS.activity, { id:crypto.randomUUID(), t:Date.now(), msg }); renderActivity(); }
-function renderActivity() {
-  const ul = document.getElementById("activityList"); if (!ul) return;
-  const items = store.get(KEYS.activity, []);
-  ul.innerHTML = items.length ? "" : `<li class="row-muted">No activity yet.</li>`;
-  for (const a of items) {
-    const li = document.createElement("li");
-    li.style.cssText = "padding:8px 10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;margin-bottom:8px;";
-    li.innerHTML = `<span class="row-muted" style="margin-right:8px">${new Date(a.t).toLocaleString()}:</span>${a.msg}`;
-    ul.appendChild(li);
-  }
-}
 
-// helper: set a status light by thresholds (low-warn-crit or high-warn-crit)
 function setLight(id, value, bands) {
-  // bands: { mode: "high"|"low", warn:number, crit:number }
-  // mode "high" => high values are bad; "low" => low values are bad
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.className = "light"; // reset
-
+  const el = document.getElementById(id); if (!el) return;
+  el.className = "light";
   let status = "ok";
   if (bands.mode === "high") {
     if (value >= bands.crit) status = "crit";
@@ -136,16 +123,9 @@ function setLight(id, value, bands) {
 
 function drawStats() {
   const wrap = document.getElementById("statsWrap"); if (!wrap) return;
-
-  const s = store.get(KEYS.stats, {
-    tempC:24, battery:0.86, altitude:1.2, link:0.75, solarW:100,
-    motorsW:0, electronicsW:1500, storage:0.12, gpsFix:true, mode:"Idle"
-  });
-
+  const s = store.get(KEYS.stats, {});
   const pct = (n)=> Math.round((n||0)*100);
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-
-  // Numeric outputs
   set("stTemp", `${s.tempC?.toFixed?.(1) ?? "—"}°C`);
   set("stBatt", `${pct(s.battery)}%`);
   set("stAlt", `${s.altitude ?? 0} m`);
@@ -155,44 +135,38 @@ function drawStats() {
   set("stPower", `${totalW} W`);
   set("stStorage", `${pct(s.storage)}%`);
   set("stGps", s.gpsFix ? "3D Fix" : "Searching");
-
-  // progress bars
-  const pb = (id, n)=>{ const e=document.getElementById(id); if(e) e.style.width = Math.max(0,Math.min(100,n)) + "%"; };
-  pb("pbBatt", pct(s.battery));
-  pb("pbLink", pct(s.link));
-  pb("pbStorage", pct(s.storage));
-
+  // bars
+  const pb=(id,n)=>{ const e=document.getElementById(id); if(e) e.style.width=Math.max(0,Math.min(100,n))+"%"; };
+  pb("pbBatt", pct(s.battery)); pb("pbLink", pct(s.link)); pb("pbStorage", pct(s.storage));
   // mode
   const modeNow=document.getElementById("modeNow"); if(modeNow) modeNow.textContent = s.mode || "Idle";
-
-  // ---- status lights ----
-  // Temp: high is bad (warn >= 40°C, crit >= 55°C)
-  setLight("lightTemp", s.tempC, { mode:"high", warn:40, crit:55 });
-
-  // Battery: low is bad (warn <= 50%, crit <= 20%)
-  setLight("lightBatt", s.battery*100, { mode:"low", warn:50, crit:20 });
-
-  // Link quality: low is bad (warn <= 70%, crit <= 40%)
-  setLight("lightLink", s.link*100, { mode:"low", warn:70, crit:40 });
-
-  // Power draw: high is bad (warn >= 3000W, crit >= 4500W)
-  setLight("lightPower", totalW, { mode:"high", warn:3000, crit:4500 });
-
-  // Storage: high is bad (warn >= 80%, crit >= 95%)
-  setLight("lightStorage", s.storage*100, { mode:"high", warn:80, crit:95 });
-
-  // GPS: boolean; no fix = crit, fix = ok
-  const gpsEl = document.getElementById("lightGps");
-  if (gpsEl) gpsEl.className = "light " + (s.gpsFix ? "ok" : "crit");
+  // status lights
+  setLight("lightTemp", s.tempC,           { mode:"high", warn:40, crit:55 });
+  setLight("lightBatt", pct(s.battery),    { mode:"low",  warn:50, crit:20 });
+  setLight("lightLink", pct(s.link),       { mode:"low",  warn:70, crit:40 });
+  setLight("lightPower", totalW,           { mode:"high", warn:3000, crit:4500 });
+  setLight("lightStorage", pct(s.storage), { mode:"high", warn:80, crit:95 });
+  const gpsEl = document.getElementById("lightGps"); if (gpsEl) gpsEl.className = "light " + (s.gpsFix ? "ok" : "crit");
 }
-
 function setMode(mode) {
   const s = store.get(KEYS.stats, {}); s.mode = mode; store.set(KEYS.stats, s);
   const el=document.getElementById("modeNow"); if(el) el.textContent = mode;
   logActivity(`Mode changed to ${mode}`);
 }
 
-/* ---------- Imaging (markers) ---------- */
+function renderActivity() {
+  const ul = document.getElementById("activityList"); if (!ul) return;
+  const items = store.get(KEYS.activity, []);
+  ul.innerHTML = items.length ? "" : `<li class="row-muted">No activity yet.</li>`;
+  for (const a of items) {
+    const li = document.createElement("li");
+    li.style.cssText = "padding:8px 10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;margin-bottom:8px;";
+    li.innerHTML = `<span class="row-muted" style="margin-right:8px">${new Date(a.t).toLocaleString()}:</span>${a.msg}`;
+    ul.appendChild(li);
+  }
+}
+
+/* ---------- imaging (markers) ---------- */
 function imagingInit() {
   const canvas = document.getElementById("feedCanvas"); if (!canvas) return;
   const ctx = canvas.getContext("2d"); const bg = gridDataURI();
@@ -251,7 +225,7 @@ function renderMarkerTable() {
   }
 }
 
-/* ---------- Tiny SVG grid ---------- */
+/* ---------- tiny SVG grid ---------- */
 function gridDataURI() {
   const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='800' height='480'>
     <defs><pattern id='g' width='40' height='40' patternUnits='userSpaceOnUse'>
@@ -263,9 +237,9 @@ function gridDataURI() {
   return `data:image/svg+xml;charset=utf-8,${svg}`;
 }
 
-/* ---------- Page boot ---------- */
+/* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", () => {
-  // Auth pages wire-up
+  // Auth pages
   if (document.body.dataset.page === "register") {
     document.getElementById("regGo").addEventListener("click", ()=>{
       const username = document.getElementById("regUser").value;
@@ -276,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const msg = document.getElementById("regMsg");
       if (!r.ok) { msg.textContent = r.msg; msg.style.color = "#b91c1c"; return; }
       msg.style.color = "#0a7f2e"; msg.textContent = "Registered! Redirecting to login…";
-      setTimeout(()=> location.href = "login.html", 700);
+      setTimeout(()=> location.href = "login.html", 600);
     });
     return;
   }
@@ -289,24 +263,32 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!r.ok) { msg.textContent = r.msg; msg.style.color = "#b91c1c"; return; }
       onSignedInRedirect();
     });
-    // If already authed, skip to app
     if (isAuthed()) onSignedInRedirect();
     return;
   }
 
-  // App pages require auth
+  // App pages
   requireAuth();
   inflateSidebar();
 
-  const connected = !!store.get(KEYS.connected, false);
-  renderConnBadge(connected);
-  runTelemetry(connected);
+  // seed stats for first paint
+  if (!store.get(KEYS.stats, null)) {
+    store.set(KEYS.stats, { tempC:24, battery:0.86, altitude:1.2, link:0.75, solarW:120,
+      motorsW:300, electronicsW:1600, storage:0.12, gpsFix:true, mode:"Idle" });
+  }
+
+  // demo: auto-connect on GH Pages
+  if (isDemoHost()) store.set(KEYS.connected, true);
+
+  renderConnBadge(!!store.get(KEYS.connected, false));
+  drawStats();
+  runTelemetry(!!store.get(KEYS.connected, false));
 
   document.getElementById("connBtn")?.addEventListener("click", ()=> setConnection(!store.get(KEYS.connected,false)));
   document.getElementById("logoutBtn")?.addEventListener("click", logout);
 
-  drawStats();     // home
-  imagingInit();   // imaging
-  renderActivity();// activity
+  imagingInit();
+  renderActivity();
+
+  console.log("[arch] boot ok. demo:", isDemoHost(), "connected:", store.get(KEYS.connected,false));
 });
-</script>

@@ -4,12 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Archaeology Drone – Home</title>
-  <!-- shared styles (includes status light classes you added) -->
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
   <div class="app">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="brand">
         <div class="logo">AD</div>
@@ -18,81 +16,36 @@
           <div id="userOrg" class="small"> </div>
         </div>
       </div>
-
       <div class="side-card">
-        <div class="flex" style="justify-content:space-between">
-          <div class="small">Drone link</div>
-          <span id="connBadge" class="badge off">Offline</span>
-        </div>
+        <div class="flex" style="justify-content:space-between"><div class="small">Drone link</div><span id="connBadge" class="badge off">Offline</span></div>
         <button id="connBtn" class="btn mt8" type="button">Connect</button>
       </div>
-
       <nav class="nav">
         <a href="index.html" class="active">🏠 Home</a>
         <a href="imaging.html">📷 Imaging</a>
         <a href="activity.html">📝 Activity</a>
         <a href="about.html">⚙️ About Hardware</a>
       </nav>
-
       <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
     </aside>
 
-    <!-- Main -->
     <main class="main">
-      <!-- Live Stats (with status lights) -->
       <section class="section">
         <div class="head">Live Stats</div>
         <div class="body">
           <div id="statsWrap" class="grid stats">
-
-            <div class="stat">
-              <div><span id="lightTemp" class="light"></span>Core Temp</div>
-              <div id="stTemp" class="k">—°C</div>
-            </div>
-
-            <div class="stat">
-              <div><span id="lightBatt" class="light"></span>Battery</div>
-              <div id="stBatt" class="k">—%</div>
-              <div class="progress mt8"><i id="pbBatt" style="width:0%"></i></div>
-            </div>
-
-            <div class="stat">
-              <div>Altitude</div>
-              <div id="stAlt" class="k">— m</div>
-            </div>
-
-            <div class="stat">
-              <div><span id="lightLink" class="light"></span>Link Quality</div>
-              <div id="stLink" class="k">—%</div>
-              <div class="progress mt8"><i id="pbLink" style="width:0%"></i></div>
-            </div>
-
-            <div class="stat">
-              <div>Solar Input</div>
-              <div id="stSolar" class="k">— W</div>
-            </div>
-
-            <div class="stat">
-              <div><span id="lightPower" class="light"></span>Power Draw</div>
-              <div id="stPower" class="k">— W</div>
-            </div>
-
-            <div class="stat">
-              <div><span id="lightStorage" class="light"></span>Storage</div>
-              <div id="stStorage" class="k">—%</div>
-              <div class="progress mt8"><i id="pbStorage" style="width:0%"></i></div>
-            </div>
-
-            <div class="stat">
-              <div><span id="lightGps" class="light"></span>GPS</div>
-              <div id="stGps" class="k">—</div>
-            </div>
-
+            <div class="stat"><div><span id="lightTemp" class="light"></span>Core Temp</div><div id="stTemp" class="k">—°C</div></div>
+            <div class="stat"><div><span id="lightBatt" class="light"></span>Battery</div><div id="stBatt" class="k">—%</div><div class="progress mt8"><i id="pbBatt" style="width:0%"></i></div></div>
+            <div class="stat"><div>Altitude</div><div id="stAlt" class="k">— m</div></div>
+            <div class="stat"><div><span id="lightLink" class="light"></span>Link Quality</div><div id="stLink" class="k">—%</div><div class="progress mt8"><i id="pbLink" style="width:0%"></i></div></div>
+            <div class="stat"><div>Solar Input</div><div id="stSolar" class="k">— W</div></div>
+            <div class="stat"><div><span id="lightPower" class="light"></span>Power Draw</div><div id="stPower" class="k">— W</div></div>
+            <div class="stat"><div><span id="lightStorage" class="light"></span>Storage</div><div id="stStorage" class="k">—%</div><div class="progress mt8"><i id="pbStorage" style="width:0%"></i></div></div>
+            <div class="stat"><div><span id="lightGps" class="light"></span>GPS</div><div id="stGps" class="k">—</div></div>
           </div>
         </div>
       </section>
 
-      <!-- Flight & Job Controls -->
       <section class="section">
         <div class="head">Flight & Job Controls</div>
         <div class="body">
@@ -106,42 +59,19 @@
         </div>
       </section>
 
-      <!-- QoL & Build -->
       <section class="section">
         <div class="head">QoL & Build</div>
         <div class="body grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
-          <div class="side-card">
-            <strong>Dust / Waterproof shell</strong>
-            <ul>
-              <li>Carbon fiber (inner)</li>
-              <li>Titanium (middle)</li>
-              <li>White paint outer coat for thermal distribution</li>
-              <li>As light as possible</li>
-            </ul>
-          </div>
-          <div class="side-card">
-            <strong>QoL / Power</strong>
-            <ul>
-              <li>Solar power assist</li>
-              <li>Battery + US outlet charging</li>
-              <li>Bluetooth 6 & app</li>
-            </ul>
-          </div>
-          <div class="side-card">
-            <strong>Sensors & Tools</strong>
-            <ul>
-              <li>Laser projector, 3D mapping (depth/width/length)</li>
-              <li>Site detection</li>
-              <li>Sifter (human loaded), Digger (flag-based)</li>
-              <li>4K camera feed</li>
-            </ul>
-          </div>
+          <div class="side-card"><strong>Dust / Waterproof shell</strong><ul>
+            <li>Carbon fiber (inner)</li><li>Titanium (middle)</li><li>White paint outer coat for thermal distribution</li><li>As light as possible</li></ul></div>
+          <div class="side-card"><strong>QoL / Power</strong><ul>
+            <li>Solar power assist</li><li>Battery + US outlet charging</li><li>Bluetooth 6 & app</li></ul></div>
+          <div class="side-card"><strong>Sensors & Tools</strong><ul>
+            <li>Laser projector, 3D mapping (depth/width/length)</li><li>Site detection</li><li>Sifter (human loaded), Digger (flag-based)</li><li>4K camera feed</li></ul></div>
         </div>
       </section>
     </main>
   </div>
-
-  <!-- shared logic (auth guard, telemetry, lights, etc.) -->
   <script src="app.js"></script>
 </body>
 </html>

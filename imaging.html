@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Archaeology Drone – Imaging</title>
+  <title>Archaeology Drone – Imaging (3D)</title>
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
   <div class="app">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="brand"><div class="logo">AD</div>
         <div class="user"><div id="userName" style="font-weight:700">—</div><div id="userOrg" class="small"> </div></div>
@@ -25,55 +26,75 @@
       <button id="logoutBtn" class="btn secondary mt8" type="button">Sign out</button>
     </aside>
 
+    <!-- Main -->
     <main class="main">
+      <!-- 3D Viewport -->
       <section class="section">
-        <div class="head">Live camera & map</div>
+        <div class="head">3D Desert Site – Camera • Mapping • Interaction</div>
         <div class="body">
-          <div class="flex" style="justify-content:space-between">
-            <div class="flex" style="gap:8px;">
-              <label class="small">Marker color</label>
-              <input id="markerColor" type="color" value="#10b981" class="input" style="width:64px; padding:4px"/>
+          <div class="viewport3d" id="threeRoot">
+            <div class="hud">Drag to orbit • Wheel to zoom • Click ground to add marker</div>
+          </div>
+
+          <!-- Controls -->
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:12px;">
+            <div class="side-card">
+              <strong>Movement</strong>
+              <div class="grid" style="grid-template-columns: repeat(3, 120px); gap:8px; margin-top:8px;">
+                <button id="ctl-up" class="btn secondary">⬆ North</button><div></div>
+                <button id="ctl-down" class="btn secondary">⬇ South</button>
+                <button id="ctl-left" class="btn secondary">⬅ West</button>
+                <button id="ctl-hover" class="btn">⟲ Hover</button>
+                <button id="ctl-right" class="btn secondary">➡ East</button>
+              </div>
+              <div class="grid" style="grid-template-columns: 120px 120px; gap:8px; margin-top:8px;">
+                <button id="ctl-alt-up" class="btn">Alt +</button>
+                <button id="ctl-alt-dn" class="btn secondary">Alt −</button>
+              </div>
+              <div class="small" style="margin-top:6px;">Actions are simulated & recorded in Activity.</div>
             </div>
-            <button id="clearMarkers" class="btn secondary">Clear markers</button>
+
+            <div class="side-card">
+              <strong>Sifting & Digging</strong>
+              <div class="grid" style="grid-template-columns: repeat(2, minmax(120px, 1fr)); gap:8px; margin-top:8px;">
+                <button id="ctl-sift-start" class="btn">▶ Start Sifting</button>
+                <button id="ctl-sift-pause" class="btn secondary">⏸ Pause Sifting</button>
+                <button id="ctl-digger-deploy" class="btn">🛠 Deploy Digger</button>
+                <button id="ctl-digger-rth" class="btn secondary">↩ Digger RTH</button>
+              </div>
+              <div class="small" style="margin-top:6px;">Digger moves to the latest marker and “excavates”.</div>
+            </div>
           </div>
-          <div class="canvas-wrap" style="margin-top:8px;">
-            <canvas id="feedCanvas"></canvas>
-            <div id="camOverlay" class="overlay-off hidden">Connect to place markers</div>
-          </div>
-          <div class="small" style="margin-top:8px;">Tip: click anywhere to add a marker; rename/delete below.</div>
         </div>
       </section>
 
+      <!-- Marker table (reuses your existing renderer) -->
       <section class="section">
-        <div class="head">Sites & Controls</div>
+        <div class="head">Sites & Flags</div>
         <div class="body">
           <table class="table">
             <thead><tr><th>Label</th><th>Coord</th><th></th></tr></thead>
             <tbody id="markerRows"></tbody>
           </table>
-
-          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:12px;">
-            <button class="btn" onclick="logActivity('Sifter engaged')">▶ Start Sifting</button>
-            <button class="btn secondary" onclick="logActivity('Sifter paused')">⏸ Pause Sifting</button>
-            <button class="btn" onclick="logActivity('Digger deployed to flagged areas')">🛠 Deploy Digger</button>
-            <button class="btn secondary" onclick="logActivity('Digger return-to-home issued')">↩ Return Digger</button>
-          </div>
-
-          <div class="side-card" style="margin-top:8px;">
-            <strong>Movement</strong>
-            <div class="grid" style="grid-template-columns: repeat(3, 120px); gap:8px; margin-top:8px;">
-              <button class="btn secondary" onclick="logActivity('Move Up')">⬆ Up</button><div></div>
-              <button class="btn secondary" onclick="logActivity('Move Down')">⬇ Down</button>
-              <button class="btn secondary" onclick="logActivity('Move Left')">⬅ Left</button>
-              <button class="btn" onclick="logActivity('Hover')">⟲ Hover</button>
-              <button class="btn secondary" onclick="logActivity('Move Right')">➡ Right</button>
-            </div>
-            <div class="small" style="margin-top:8px;">Controls are mocked; actions appear in Activity.</div>
-          </div>
+          <div class="small" style="margin-top:8px;">Rename a marker inline. Delete to remove from the 3D scene.</div>
         </div>
       </section>
     </main>
   </div>
+
+  <!-- Your core app logic -->
   <script src="app.js"></script>
+  <!-- 3D layer -->
+  <script type="module" src="imaging-3d.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Ensure auth/telemetry then bring up 3D
+      // app.js already did requireAuth(), inflateSidebar(), etc.
+      // Now mount 3D:
+      if (typeof imaging3DInit === "function") imaging3DInit();
+      // Build the marker table using your existing logic:
+      if (typeof renderMarkerTable === "function") renderMarkerTable();
+    });
+  </script>
 </body>
 </html>
